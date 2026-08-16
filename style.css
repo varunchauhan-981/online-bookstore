@@ -173,3 +173,55 @@ body {
     color: white;
     border-color: #4f46e5;
 }
+.book-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15); /* Soft purple glow shadow */
+}
+/* Responsive Design for Mobile Devices (Screen width 768px se kam hone par) */
+@media (max-width: 768px) {
+    /* Navbar ko stack karna */
+    .navbar {
+        padding: 15px 5%;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Hero section font size chota karna */
+    .hero {
+        padding: 40px 15px;
+    }
+
+    .hero h1 {
+        font-size: 26px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    /* Search box ko mobile friendly banana */
+    .search-box {
+        flex-direction: column;
+        background: transparent;
+        box-shadow: none;
+        gap: 10px;
+    }
+
+    .search-box input {
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+    }
+
+    .search-box button {
+        border-radius: 8px;
+        width: 100%;
+    }
+}
