@@ -4,54 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Bookstore</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Navbar -->
-    <header class="navbar">
-        <div class="logo">📚 BookStore</div>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Categories</a>
-            <a href="#" class="cart-btn">Cart (0)</a>
-        </nav>
-    </header>
+    <!-- Modern Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">📚 Bookstore</div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active">Home</a>
+            <a href="#books" class="nav-link">Books</a>
+            <button class="cart-btn" id="cartBtn">
+                🛒 Cart <span class="cart-badge" id="cartBadge">0</span>
+            </button>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <h1>Discover Your Next Favorite Book</h1>
-        <p>Explore thousands of books across all genres with ease.</p>
+    <header class="hero">
+        <h1>Welcome to Our Bookstore</h1>
+        <p>Discover your next favorite book with smooth and easy shopping.</p>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search by title, author, or keyword...">
-            <button>Search</button>
+            <input type="text" id="searchInput" placeholder="Search by book title or author...">
         </div>
-    </section>
+    </header>
 
-    <!-- Books Grid Section -->
-    <main class="container">
+    <!-- Books Section -->
+    <main class="container" id="books">
         <h2>Featured Books</h2>
-        <div class="book-grid">
-            <!-- Sample Book Card 1 -->
-            <div class="book-card">
-                <div class="book-img-placeholder">Cover Image</div>
-                <h3>Atomic Habits</h3>
-                <p class="author">by James Clear</p>
-                <p class="price">₹499</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
-            <!-- Sample Book Card 2 -->
-            <div class="book-card">
-                <div class="book-img-placeholder">Cover Image</div>
-                <h3>Rich Dad Poor Dad</h3>
-                <p class="author">by Robert Kiyosaki</p>
-                <p class="price">₹399</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
+        <div class="book-grid" id="bookGrid">
+            <!-- Dynamic books loaded via JS -->
         </div>
     </main>
+
+    <!-- Cart Modal / Slide-out Drawer -->
+    <div class="cart-modal-overlay" id="cartModal">
+        <div class="cart-modal">
+            <div class="cart-modal-header">
+                <h2>Your Shopping Cart</h2>
+                <button class="close-cart-btn" id="closeCartBtn">&times;</button>
+            </div>
+            
+            <div class="cart-modal-body" id="cartItemsList">
+                <!-- Cart items dynamically injected here -->
+            </div>
+
+            <div class="cart-modal-footer">
+                <div class="cart-total-row">
+                    <span>Total Amount:</span>
+                    <span id="cartTotalPrice" class="cart-total-price">₹0</span>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">Proceed to Buy</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
