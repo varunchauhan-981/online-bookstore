@@ -1,4 +1,4 @@
-// LocalStorage se data safely load karna
+// LocalStorage safely load
 let cart = {};
 try {
     const saved = localStorage.getItem('cartItems');
@@ -32,7 +32,7 @@ async function fetchBooks() {
         updateTotalCartBadge();
     } catch (error) {
         console.error("Error fetching books:", error);
-        bookGrid.innerHTML = `<p style="color: red; text-align: center;">Books load nahi ho paayi. Please check karein server chal raha hai.</p>`;
+        bookGrid.innerHTML = `<p style="color: red; text-align: center;">Books load nahi ho paayi. Server check karein.</p>`;
     }
 }
 
@@ -75,7 +75,7 @@ cartModal.addEventListener('click', (e) => {
     if (e.target === cartModal) cartModal.classList.remove('active');
 });
 
-// Render Cart Drawer Content & Total
+// Render Cart Drawer
 function renderCartModal() {
     cartItemsList.innerHTML = '';
     let totalAmount = 0;
@@ -114,7 +114,7 @@ function renderCartModal() {
     cartTotalPrice.innerText = `₹${totalAmount}`;
 }
 
-// Global Quantity Change Helper
+// Global Quantity Change
 function changeQuantity(bookId, delta) {
     const currentQty = cart[bookId] || 0;
     const newQty = currentQty + delta;
@@ -128,11 +128,9 @@ function changeQuantity(bookId, delta) {
     localStorage.setItem('cartItems', JSON.stringify(cart));
     updateTotalCartBadge();
 
-    // Update Grid Card count if present
     const gridQtySpan = document.getElementById(`qty-${bookId}`);
     if (gridQtySpan) gridQtySpan.innerText = cart[bookId] || 0;
 
-    // Refresh Modal if active
     if (cartModal.classList.contains('active')) {
         renderCartModal();
     }
@@ -147,7 +145,7 @@ bookGrid.addEventListener('click', (e) => {
     else if (e.target.classList.contains('minus-btn')) changeQuantity(bookId, -1);
 });
 
-// Events for Inside Cart Modal (+ / -)
+// Events inside Cart Modal (+ / -)
 cartItemsList.addEventListener('click', (e) => {
     const bookId = e.target.dataset.id;
     if (!bookId) return;
@@ -156,30 +154,54 @@ cartItemsList.addEventListener('click', (e) => {
     else if (e.target.classList.contains('modal-minus-btn')) changeQuantity(bookId, -1);
 });
 
-// Update Badge Count
 function updateTotalCartBadge() {
     const totalCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
     cartBadge.innerText = totalCount;
 }
 
-// Proceed to Buy (Checkout) Logic
-checkoutBtn.addEventListener('click', () => {
-    const totalItems = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
-    if (totalItems === 0) {
-        alert("Your cart is empty! Please add some books first.");
+// Real Backend Order Placement Logic
+checkoutBtn.addEventListener('click', async () => {
+    const orderItems = Object.keys(cart).map(id => {
+        const book = allBooks.find(b => b.id === parseInt(id));
+        return {
+            id: book.id,
+            title: book.title,
+            price: book.price,
+            quantity: cart[id]
+        };
+    }).filter(item => item.quantity > 0);
+
+    if (orderItems.length === 0) {
+        alert("Your cart is empty!");
         return;
     }
 
-    const grandTotal = cartTotalPrice.innerText;
-    alert(`🎉 Order Placed Successfully!\n\nTotal Items: ${totalItems}\nAmount Paid: ${grandTotal}\n\nThank you for shopping with Bookstore!`);
+    const totalAmount = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // Reset Cart
-    cart = {};
-    localStorage.removeItem('cartItems');
-    updateTotalCartBadge();
-    displayBooks(allBooks);
-    renderCartModal();
-    cartModal.classList.remove('active');
+    try {
+        const response = await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: orderItems, totalAmount: totalAmount })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert(`🎉 Order Confirmed!\n\nOrder ID: ${data.orderId}\nTotal Amount: ₹${totalAmount}\n\nCheck terminal to see the received order payload.`);
+            
+            // Clear cart
+            cart = {};
+            localStorage.removeItem('cartItems');
+            updateTotalCartBadge();
+            displayBooks(allBooks);
+            renderCartModal();
+            cartModal.classList.remove('active');
+        }
+    } catch (err) {
+        console.error("Order failed:", err);
+        alert("Something went wrong while placing your order.");
+    }
 });
 
 // Live Search Filter
